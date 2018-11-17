@@ -20,7 +20,7 @@ services:
       - "--docker.watch"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /mnt/traefik/acme.json:/etc/traefik/acme/acme.json
+      - ./traefik/acme.json:/etc/traefik/acme/acme.json
     networks:
       - appnet
     ports:
