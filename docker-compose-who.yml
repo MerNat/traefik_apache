@@ -1,0 +1,22 @@
+version: "3.4"
+
+services:
+  who:
+    image: emilevauge/whoami
+    container_name: whoami_service
+    networks:
+      - traefik-net
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.role == worker
+      update_config:
+        parallalism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+networks:
+  traefik-net:
+    external: true
+    
