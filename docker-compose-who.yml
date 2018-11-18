@@ -6,13 +6,16 @@ services:
     container_name: whoami_service
     networks:
       - traefik-net
+    labels: 
+      - "traefik.port=80"
+      - "traefik.frontend.rule=Host:one.worker.com"
     deploy:
       mode: global
       placement:
         constraints:
           - node.role == worker
       update_config:
-        parallalism: 1
+        parallelism: 1
         delay: 10s
       restart_policy:
         condition: on-failure
