@@ -8,15 +8,11 @@ services:
       - traefik-net
     labels: 
       - "traefik.port=80"
-      - "traefik.frontend.rule=Host:one.worker.com"
+      - "traefik.frontend.rule=Host:192.168.99.101"
+    ports:
+      - 80:80
     deploy:
       mode: global
-      placement:
-        constraints:
-          - node.role == worker
-      update_config:
-        parallelism: 1
-        delay: 10s
       restart_policy:
         condition: on-failure
 networks:
