@@ -1,21 +1,27 @@
-version: "3.4"
-
 services:
-  who:
-    image: emilevauge/whoami
-    container_name: whoami_service
+  proxy:
+    image: traefik:1.4-alpine
+    command: --web --docker --docker.domain=docker.localhost
     networks:
-      - traefik-net
-    labels: 
-      - "traefik.port=80"
-      - "traefik.frontend.rule=Host:192.168.99.101"
+      - traefik
     ports:
       - 80:80
-    deploy:
-      mode: global
-      restart_policy:
-        condition: on-failure
+      - 8080:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  apache:
+    image: httpd:alpine
+    labels:
+      - "traefik.frontend.rule=Host:apache.localhost"
+    networks:
+      - traefik
+  nginx:
+    image: nginx:alpine
+    labels:
+      - "traefik.frontend.rule=Host:nginx.localhost"
+    networks:
+      - traefik
+
 networks:
-  traefik-net:
+  traefik:
     external: true
-    
