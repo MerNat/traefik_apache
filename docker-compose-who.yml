@@ -1,3 +1,4 @@
+version: '3.1'
 services:
   proxy:
     image: traefik:1.4-alpine
@@ -24,4 +25,4 @@ services:
 
 networks:
   traefik:
-    external: true
+    driver: traefik
