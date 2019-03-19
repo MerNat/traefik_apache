@@ -24,7 +24,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - webgateway
-      - traefik
     ports:
       - "80:80"
       - "8080:8080"
@@ -50,13 +49,11 @@ services:
       labels:
         - "traefik.frontend.rule=Host:test.habeshaexpress.com"
         - "traefik.port=80"
-        - "traefik.docker.network=traefik"
+        - "traefik.entrypoints=http"
+        - "traefik.backend=test"
     networks:
-      - traefik
+      - webgateway
 networks:
   webgateway:
-    driver: overlay
-    external: true
-  traefik:
     driver: overlay
     external: true
