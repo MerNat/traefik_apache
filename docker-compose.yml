@@ -3,17 +3,17 @@ services:
   traefik:
     image: traefik:alpine
     command:
-      # - "--api"
-      # - "--entrypoints=Name:http Address::80 Redirect.EntryPoint:https"
-      # - "--entrypoints=Name:https Address::443 TLS"
-      # - "--defaultentrypoints=http,https"
-      # - "--acme"
-      # - "--acme.storage=/etc/traefik/acme/acme.json"
-      # - "--acme.entryPoint=https"
-      # - "--acme.httpChallenge.entryPoint=http"
-      # - "--acme.onHostRule=true"
-      # - "--acme.onDemand=false"
-      # - "--acme.email=contact@mydomain.ca"
+      - "--api"
+      - "--entrypoints=Name:http Address::80 Redirect.EntryPoint:https"
+      - "--entrypoints=Name:https Address::443 TLS"
+      - "--defaultentrypoints=http,https"
+      - "--acme"
+      - "--acme.storage=/etc/traefik/acme/acme.json"
+      - "--acme.entryPoint=https"
+      - "--acme.httpChallenge.entryPoint=http"
+      - "--acme.onHostRule=true"
+      - "--acme.onDemand=false"
+      - "--acme.email=support@habeshaexpress.com"
       - "--web"
       - "--docker"
       - "--docker.swarmMode"
@@ -47,9 +47,9 @@ services:
       restart_policy:
         condition: on-failure
       labels:
-        - "traefik.frontend.rule=Host:test.habeshaexpress.com"
+        - "traefik.frontend.rule=Host:habeshaexpress.com, test.habeshaexpress.com"
         - "traefik.port=80"
-        - "traefik.entrypoints=http"
+        - "traefik.entrypoints=https"
         - "traefik.backend=test"
     networks:
       - webgateway
