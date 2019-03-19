@@ -1,27 +1,29 @@
-version: "3.4"
+version: "3"
 services:
-  proxy:
-    image: traefik
+  traefik:
+    image: traefik:alpine
     command:
-      - "--api"
-      - "--entrypoints=Name:http Address::80"
-      - "--defaultentrypoints=http"
-      - "--acme"
-      - "--acme.storage=/etc/traefik/acme/acme.json"
-      - "--acme.entryPoint=https"
-      - "--acme.httpChallenge.entryPoint=http"
-      - "--acme.onHostRule=true"
-      - "--acme.onDemand=false"
-      - "--acme.email=me@example.com"
+      # - "--api"
+      # - "--entrypoints=Name:http Address::80 Redirect.EntryPoint:https"
+      # - "--entrypoints=Name:https Address::443 TLS"
+      # - "--defaultentrypoints=http,https"
+      # - "--acme"
+      # - "--acme.storage=/etc/traefik/acme/acme.json"
+      # - "--acme.entryPoint=https"
+      # - "--acme.httpChallenge.entryPoint=http"
+      # - "--acme.onHostRule=true"
+      # - "--acme.onDemand=false"
+      # - "--acme.email=contact@mydomain.ca"
+      - "--web"
       - "--docker"
       - "--docker.swarmMode"
-      - "--docker.domain=example.com"
+      - "--docker.domain=mydomain.ca"
       - "--docker.watch"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./traefik/acme.json:/etc/traefik/acme/acme.json
     networks:
-      - appnet
+      - webgateway
+      - traefik
     ports:
       - target: 80
         published: 80
@@ -42,6 +44,19 @@ services:
         delay: 10s
       restart_policy:
         condition: on-failure
+  apache:
+    image: httpd:alpine
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+    networks:
+      - traefik
 networks:
-  appnet:
+  webgateway:
+    driver: overlay
     external: true
+  traefik:
+    driver: overlay
