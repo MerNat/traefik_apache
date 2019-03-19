@@ -17,7 +17,7 @@ services:
       - "--web"
       - "--docker"
       - "--docker.swarmMode"
-      - "--docker.domain=mydomain.ca"
+      - "--docker.domain=habeshaexpress.com"
       - "--docker.watch"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -53,7 +53,7 @@ services:
       restart_policy:
         condition: on-failure
       labels:
-        - "traefik.frontend.rule=Host:apache.localhost"
+        - "traefik.frontend.rule=Host:test.habeshaexpress.com"
     networks:
       - traefik
 networks:
