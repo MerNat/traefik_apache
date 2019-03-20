@@ -58,4 +58,4 @@ services:
 # Traefik Docker Networks for Docker Swarm
 networks:
   webgateway:
-    name: webgateway
+    external: true
