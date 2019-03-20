@@ -9,8 +9,9 @@ services:
     networks:
       - webgateway
     ports:
-      - 80:80
-      - 443:443
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:8080:8080"
+      - "0.0.0.0:443:443"
     # These options are only used in Docker Swarm via docker stack deploy.
     deploy:
       mode: global
@@ -18,7 +19,7 @@ services:
         constraints:
           - node.role == manager
       labels:
-        - traefik.frontend.rule=Host:habeshaexpress.com
+        - traefik.frontend.rule=Host:test.habeshaexpress.com
         - traefik.enable=true
         - traefik.port=8080
         - traefik.docker.network=webgateway
@@ -39,8 +40,8 @@ services:
       --docker.swarmmode
       --docker.watch
       --docker.exposedbydefault=false
-      --api
-      --logLevel=INFO
+      --web
+      --logLevel=DEBUG
       # --accessLog
       # --accessLog.filePath=/etc/traefik/logs/access.log
       # --accessLog.format=json
