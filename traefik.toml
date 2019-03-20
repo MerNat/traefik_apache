@@ -28,4 +28,4 @@ onHostRule = true
 [docker]
 domain = "habeshaexpress.com"
 watch = true
-network = "overlay"
+network = "webgateway"
