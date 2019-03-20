@@ -18,6 +18,7 @@ services:
       - "--docker.swarmMode"
       - "--docker.domain=habeshaexpress.com"
       - "--docker.watch"
+      - "--logLevel=DEBUG"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /mnt/traefik/acme.json:/etc/traefik/acme/acme.json
