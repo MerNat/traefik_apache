@@ -24,7 +24,6 @@ services:
         - traefik.redirectorservice.frontend.redirect.entryPoint=https
         # Traefik service that listens to HTTPS
         - traefik.webservice.frontend.entryPoints=https
-        # - traefik.frontend.auth.basic.users=${USERNAME}:${HASHED_PASSWORD}
   consul-replica:
     image: consul
     command: agent -server -client=0.0.0.0 -retry-join="consul-leader"
@@ -83,18 +82,15 @@ services:
     depends_on:
       - consul-leader
   blog:
-    image: ghost:1.25.7-alpine
+    image: httpd:alpine
     deploy:
       replicas: 1
       labels:
-        - "traefik.backend.loadbalancer.sticky=false"
-        - "traefik.backend.loadbalancer.swarm=true"
         - "traefik.backend=blog-1"
         - "traefik.docker.network=webgateway"
         - "traefik.entrypoints=https"
-        - "traefik.frontend.passHostHeader=true"
         - "traefik.frontend.rule=Host:test.habeshaexpress.com"
-        - "traefik.port=2368"
+        - "traefik.port=80"
     networks:
       - default
       - webgateway
