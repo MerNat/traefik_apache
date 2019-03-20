@@ -1,59 +1,105 @@
-version: "3"
+version: '3.3'
+
 services:
+  consul-leader:
+    image: consul
+    command: agent -server -client=0.0.0.0 -bootstrap -ui
+    volumes:
+      - consul-data-leader:/consul/data
+    environment:
+      - CONSUL_BIND_INTERFACE=eth0
+      - 'CONSUL_LOCAL_CONFIG={"leave_on_terminate": true}'
+    networks:
+      - default
+      - webgateway
+    deploy:
+      labels:
+        - traefik.frontend.rule=Host:consul.habeshaexpress.com
+        - traefik.enable=true
+        - traefik.port=8500
+        - traefik.tags=consulTag
+        - traefik.docker.network=webgateway
+        # Traefik service that listens to HTTP
+        - traefik.redirectorservice.frontend.entryPoints=http
+        - traefik.redirectorservice.frontend.redirect.entryPoint=https
+        # Traefik service that listens to HTTPS
+        - traefik.webservice.frontend.entryPoints=https
+        # - traefik.frontend.auth.basic.users=${USERNAME}:${HASHED_PASSWORD}
+  consul-replica:
+    image: consul
+    command: agent -server -client=0.0.0.0 -retry-join="consul-leader"
+    volumes:
+      - consul-data-replica:/consul/data
+    environment:
+      - CONSUL_BIND_INTERFACE=eth0
+      - 'CONSUL_LOCAL_CONFIG={"leave_on_terminate": true}'
+    networks:
+      - default
+      - webgateway
+    deploy:
+      replicas: 1
+      placement:
+        preferences:
+          - spread: node.id
   traefik:
     image: traefik:alpine
-    command:
-      - "--api"
-      - "--entrypoints=Name:http Address::80 Redirect.EntryPoint:https"
-      - "--entrypoints=Name:https Address::443 TLS"
-      - "--defaultentrypoints=http,https"
-      - "--acme"
-      - "--acme.storage=/etc/traefik/acme/acme.json"
-      - "--acme.entryPoint=https"
-      - "--acme.httpChallenge.entryPoint=http"
-      - "--acme.onHostRule=true"
-      - "--acme.onDemand=false"
-      - "--acme.email=support@habeshaexpress.com"
-      - "--web"
-      - "--docker"
-      - "--docker.swarmMode"
-      - "--docker.domain=habeshaexpress.com"
-      - "--docker.watch"
-      - "--logLevel=DEBUG"
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+        preferences:
+          - spread: node.id
+      labels:
+        - traefik.frontend.rule=Host:habeshaexpress.com
+        - traefik.enable=true
+        - traefik.port=8080
+        - traefik.tags=webgateway
+        - traefik.docker.network=webgateway
+        # Traefik service that listens to HTTP
+        - traefik.redirectorservice.frontend.entryPoints=http
+        - traefik.redirectorservice.frontend.redirect.entryPoint=https
+        # Traefik service that listens to HTTPS
+        - traefik.webservice.frontend.entryPoints=https
+        # - traefik.frontend.auth.basic.users=${USERNAME}:${HASHED_PASSWORD}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    command: >
+      --docker
+      --docker.swarmmode
+      --docker.watch
+      --docker.exposedbydefault=false
+      --constraints=tag==webgateway
+      --entrypoints='Name:http Address::80'
+      --entrypoints='Name:https Address::443 TLS'
+      --consul
+      --consul.endpoint="consul-leader:8500"
+      --acme
+      --acme.email=support@habeshaexpress.com
+      --acme.storage="traefik/acme/account"
+      --acme.entryPoint=https
+      --acme.httpChallenge.entryPoint=http
+      --acme.onhostrule=true
+      --acme.acmelogging=true
+      --logLevel=INFO
+      --accessLog
+      --web
     networks:
+      - default
       - webgateway
-    ports:
-      - "80:80"
-      - "8080:8080"
-      - "443:443"
-    deploy:
-      mode: global
-      placement:
-        constraints:
-          - node.role == manager
-      update_config:
-        parallelism: 1
-        delay: 10s
-      restart_policy:
-        condition: on-failure
-  apache:
-    image: httpd:alpine
-    deploy:
-      placement:
-        constraints:
-          - node.role == manager
-      restart_policy:
-        condition: on-failure
-      labels:
-        - "traefik.frontend.rule=Host:habeshaexpress.com, test.habeshaexpress.com"
-        - "traefik.port=80"
-        - "traefik.entrypoints=https"
-        - "traefik.backend=test"
-    networks:
-      - webgateway
+    depends_on:
+      - consul-leader
+
+volumes:
+  consul-data-leader:
+    name: consul-data-leader
+  consul-data-replica:
+    name: consul-data-replica
+
 networks:
   webgateway:
-    driver: overlay
     external: true
