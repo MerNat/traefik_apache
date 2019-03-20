@@ -86,11 +86,16 @@ services:
     deploy:
       replicas: 1
       labels:
-        - "traefik.backend=blog-1"
-        - "traefik.docker.network=webgateway"
-        - "traefik.entrypoints=https"
-        - "traefik.frontend.rule=Host:test.habeshaexpress.com"
-        - "traefik.port=80"
+        - traefik.frontend.rule=Host:test.habeshaexpress.com
+        - traefik.enable=true
+        - traefik.port=80
+        - traefik.tags=theBlog
+        - traefik.docker.network=webgateway
+        # Traefik service that listens to HTTP
+        - traefik.redirectorservice.frontend.entryPoints=http
+        - traefik.redirectorservice.frontend.redirect.entryPoint=https
+        # Traefik service that listens to HTTPS
+        - traefik.webservice.frontend.entryPoints=https
     networks:
       - default
       - webgateway
