@@ -4,7 +4,7 @@ version: '3.4'
 networks:
   webgateway:
     external: true
-    
+
 services:
   traefik:
     image: traefik:alpine
@@ -18,13 +18,23 @@ services:
         - traefik.port=8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - .traefik.toml:/traefik.toml
-      - .acme.json:/acme.json
     command: >
       --docker
       --docker.swarmmode
       --docker.watch
-      --web
+      --docker.exposedbydefault=false
+      --constraints=tag==webgateway
+      --entrypoints='Name:http Address::80'
+      --entrypoints='Name:https Address::443 TLS'
+      --acme
+      --acme.email=support@habeshaexpress.com
+      --acme.storage="traefik/acme/account"
+      --acme.entryPoint=https
+      --acme.httpChallenge.entryPoint=http
+      --acme.onhostrule=true
+      --acme.acmelogging=true
       --logLevel=INFO
+      --accessLog
+      --web
     networks:
       - webgateway
