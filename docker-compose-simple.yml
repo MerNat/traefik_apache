@@ -19,3 +19,7 @@ services:
     --docker
     --docker.swarmmode
     --docker.watch
+    --web
+    --logLevel=INFO
+    networks:
+      - webgateway

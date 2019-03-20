@@ -26,9 +26,3 @@ entryPoint = "https"
 onHostRule = true
   [acme.httpChallenge]
   entryPoint = "http"
-
-[docker]
-domain = "habeshaexpress.com"
-watch = true
-network = "webgateway"
-swarmMode = true
