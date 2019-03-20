@@ -16,10 +16,10 @@ services:
       - .traefik.toml:/traefik.toml
       - .acme.json:/acme.json
     command: >
-    --docker
-    --docker.swarmmode
-    --docker.watch
-    --web
-    --logLevel=INFO
+      --docker
+      --docker.swarmmode
+      --docker.watch
+      --web
+      --logLevel=INFO
     networks:
       - webgateway
