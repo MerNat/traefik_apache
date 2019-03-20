@@ -54,22 +54,11 @@ services:
           - node.role == manager
         preferences:
           - spread: node.id
-      labels:
-        - traefik.frontend.rule=Host:habeshaexpress.com
-        - traefik.enable=true
-        - traefik.port=8080
-        - traefik.tags=webgateway
-        - traefik.docker.network=webgateway
-        # Traefik service that listens to HTTP
-        - traefik.redirectorservice.frontend.entryPoints=http
-        - traefik.redirectorservice.frontend.redirect.entryPoint=https
-        # Traefik service that listens to HTTPS
-        - traefik.webservice.frontend.entryPoints=https
-        # - traefik.frontend.auth.basic.users=${USERNAME}:${HASHED_PASSWORD}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: >
       --docker
+      --docker.domain=habeshaexpress.com
       --docker.swarmmode
       --docker.watch
       --docker.exposedbydefault=false
@@ -104,7 +93,7 @@ services:
         - "traefik.docker.network=webgateway"
         - "traefik.entrypoints=https"
         - "traefik.frontend.passHostHeader=true"
-        - "traefik.frontend.rule=Host:blog.habeshaexpress.com"
+        - "traefik.frontend.rule=Host:test.habeshaexpress.com"
         - "traefik.port=2368"
     networks:
       - default
