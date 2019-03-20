@@ -6,10 +6,10 @@ service:
     deploy:
       replicas: 1
       labels:
-        - traefik.frontend.rule=Host:habeshaexpress.com test.habeshaexpress.com
+        - traefik.frontend.rule=Host:test.habeshaexpress.com
         - traefik.enable=true
         - traefik.port=80
-        - traefik.tags=theBlog
+        - traefik.tags=webgateway
         - traefik.docker.network=webgateway
         # Traefik service that listens to HTTP
         - traefik.redirectorservice.frontend.entryPoints=http
