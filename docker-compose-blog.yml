@@ -2,23 +2,23 @@ version: '3.4'
 
 service:
   blog:
-  image: httpd:alpine
-  deploy:
-    replicas: 1
-    labels:
-      - traefik.frontend.rule=Host:habeshaexpress.com test.habeshaexpress.com
-      - traefik.enable=true
-      - traefik.port=80
-      - traefik.tags=theBlog
-      - traefik.docker.network=webgateway
-      # Traefik service that listens to HTTP
-      - traefik.redirectorservice.frontend.entryPoints=http
-      - traefik.redirectorservice.frontend.redirect.entryPoint=https
-      # Traefik service that listens to HTTPS
-      - traefik.webservice.frontend.entryPoints=https
-  networks:
-    - default
-    - webgateway
+    image: httpd:alpine
+    deploy:
+      replicas: 1
+      labels:
+        - traefik.frontend.rule=Host:habeshaexpress.com test.habeshaexpress.com
+        - traefik.enable=true
+        - traefik.port=80
+        - traefik.tags=theBlog
+        - traefik.docker.network=webgateway
+        # Traefik service that listens to HTTP
+        - traefik.redirectorservice.frontend.entryPoints=http
+        - traefik.redirectorservice.frontend.redirect.entryPoint=https
+        # Traefik service that listens to HTTPS
+        - traefik.webservice.frontend.entryPoints=https
+    networks:
+      - default
+      - webgateway
 
 networks:
   webgateway:
