@@ -93,6 +93,24 @@ services:
       - webgateway
     depends_on:
       - consul-leader
+  blog:
+    image: httpd:alpine
+    deploy:
+      replicas: 1
+      labels:
+        - traefik.frontend.rule=Host:test.habeshaexpress.com
+        - traefik.enable=true
+        - traefik.port=80
+        - traefik.tags=webgateway
+        - traefik.docker.network=webgateway
+        # Traefik service that listens to HTTP
+        - traefik.redirectorservice.frontend.entryPoints=http
+        - traefik.redirectorservice.frontend.redirect.entryPoint=https
+        # Traefik service that listens to HTTPS
+        - traefik.webservice.frontend.entryPoints=https
+    networks:
+      - default
+      - webgateway
 
 volumes:
   consul-data-leader:
