@@ -24,12 +24,9 @@ services:
       labels:
         - "traefik.docker.network=webtest"
         - "traefik.enable=true"
-        - "traefik.basic.frontend.rule=Host:app.my-awesome-app.org"
-        - "traefik.basic.port=9000"
-        - "traefik.basic.protocol=http"
-        - "traefik.admin.frontend.rule=Host:admin-app.my-awesome-app.org"
-        - "traefik.admin.protocol=https"
-        - "traefik.admin.port=9443"
+        - "traefik.frontend.rule=Host:test.habeshaexpress.com"
+        - "traefik.protocol=https"
+        - "traefik.port=80"
     networks:
         - webtest
 
