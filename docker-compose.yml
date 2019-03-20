@@ -93,18 +93,19 @@ services:
       - webgateway
     depends_on:
       - consul-leader
-  apache:
-    image: httpd:alpine
+  blog:
+    image: ghost:1.25.7-alpine
     deploy:
-      restart_policy:
-        condition: on-failure
+      replicas: 1
       labels:
-        - traefik.enable=true
-        - traefik.frontend.rule=Host:test.habeshaexpress.com
-        - traefik.port=80
-        - traefik.entrypoints=https
-        - traefik.docker.network=webgateway
-        - traefik.backend=apache
+        - "traefik.backend.loadbalancer.sticky=false"
+        - "traefik.backend.loadbalancer.swarm=true"
+        - "traefik.backend=blog-1"
+        - "traefik.docker.network=webgateway"
+        - "traefik.entrypoints=https"
+        - "traefik.frontend.passHostHeader=true"
+        - "traefik.frontend.rule=Host:blog.habeshaexpress.com"
+        - "traefik.port=2368"
     networks:
       - default
       - webgateway
