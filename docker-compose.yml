@@ -103,16 +103,11 @@ services:
         - traefik.frontend.rule=Host:test.habeshaexpress.com
         - traefik.port=80
         - traefik.entrypoints=https
-        - traefik.tag=test
         - traefik.docker.network=webgateway
-        # Traefik service that listens to HTTP
-        - traefik.redirectorservice.frontend.entryPoints=http
-        - traefik.redirectorservice.frontend.redirect.entryPoint=https
-        # Traefik service that listens to HTTPS
-        - traefik.webservice.frontend.entryPoints=https
+        - traefik.backend=apache
     networks:
-      - webgateway
       - default
+      - webgateway
 
 volumes:
   consul-data-leader:
