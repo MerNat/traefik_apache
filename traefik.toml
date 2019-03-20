@@ -1,4 +1,6 @@
+logLevel = "INFO"
 defaultEntryPoints = ["http", "https"]
+
 
 [entryPoints]
   [entryPoints.dashboard]
@@ -29,3 +31,4 @@ onHostRule = true
 domain = "habeshaexpress.com"
 watch = true
 network = "webgateway"
+swarmMode = true
