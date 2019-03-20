@@ -21,6 +21,7 @@ services:
       --docker.domain="habeshaexpress.com"
       --docker.watch
       --web
+      --logLevel=INFO
     ports:
       - 80:80
       - 443:443
