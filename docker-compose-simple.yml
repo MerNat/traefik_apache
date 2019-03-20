@@ -11,14 +11,14 @@ services:
       --acme 
       --acme.acmelogging="true"
       # Change this to an actual email address
-      --acme.email="example@example.com"
+      --acme.email="support@habeshaexpress.com"
       --acme.entrypoint="https"
       --acme.storage="/acme/acme.json"
       --acme.onhostrule="true"
       --docker
       --docker.swarmmode
       # Change this to your primary domain
-      --docker.domain="example.com"
+      --docker.domain="habeshaexpress.com"
       --docker.watch
       --web
     ports:
