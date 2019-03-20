@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.4'
 
 services:
   consul-leader:
@@ -93,6 +93,18 @@ services:
       - webgateway
     depends_on:
       - consul-leader
+  apache:
+    image: httpd:alpine
+    deploy:
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.frontend.rule=Host:test.habeshaexpress.com"
+        - "traefik.port=80"
+        - "traefik.entrypoints=https"
+        - "traefik.backend=test"
+    networks:
+      - webgateway
 
 volumes:
   consul-data-leader:
