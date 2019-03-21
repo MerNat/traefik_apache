@@ -14,15 +14,13 @@ services:
       - webgateway
     deploy:
       labels:
-        - traefik.frontend.rule=Host:consul.habeshaexpress.com
+        - traefik.frontend.rule=Host:consul.example.com
         - traefik.enable=true
         - traefik.port=8500
         - traefik.tags=consulTag
         - traefik.docker.network=webgateway
-        # Traefik service that listens to HTTP
         - traefik.redirectorservice.frontend.entryPoints=http
         - traefik.redirectorservice.frontend.redirect.entryPoint=https
-        # Traefik service that listens to HTTPS
         - traefik.webservice.frontend.entryPoints=https
   consul-replica:
     image: consul
@@ -54,22 +52,20 @@ services:
         preferences:
           - spread: node.id
       labels:
-        - traefik.frontend.rule=Host:habeshaexpress.com
+        - traefik.frontend.rule=Host:example.com
         - traefik.enable=true
         - traefik.port=8080
         - traefik.tags=webgateway
         - traefik.docker.network=webgateway
-        # Traefik service that listens to HTTP
         - traefik.redirectorservice.frontend.entryPoints=http
         - traefik.redirectorservice.frontend.redirect.entryPoint=https
-        # Traefik service that listens to HTTPS
         - traefik.webservice.frontend.entryPoints=https
         # - traefik.frontend.auth.basic.users=${USERNAME}:${HASHED_PASSWORD}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: >
       --docker
-      --docker.domain=habeshaexpress.com
+      --docker.domain=example.com
       --docker.swarmmode
       --docker.watch
       --docker.exposedbydefault=false
@@ -79,7 +75,7 @@ services:
       --consul
       --consul.endpoint="consul-leader:8500"
       --acme
-      --acme.email=support@habeshaexpress.com
+      --acme.email=support@example.com
       --acme.storage="traefik/acme/account"
       --acme.entryPoint=https
       --acme.httpChallenge.entryPoint=http
@@ -98,15 +94,12 @@ services:
     deploy:
       replicas: 1
       labels:
-        - traefik.frontend.rule=Host:test.habeshaexpress.com
+        - traefik.frontend.rule=Host:test.example.com
         - traefik.enable=true
         - traefik.port=80
         - traefik.tags=webgateway
         - traefik.docker.network=webgateway
-        # Traefik service that listens to HTTP
         - traefik.redirectorservice.frontend.entryPoints=http
-        - traefik.redirectorservice.frontend.redirect.entryPoint=https
-        # Traefik service that listens to HTTPS
         - traefik.webservice.frontend.entryPoints=https
     networks:
       - default
